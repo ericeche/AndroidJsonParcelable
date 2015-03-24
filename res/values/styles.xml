@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="MenuFont">
+        <item name="android:textSize">30sp</item>
+		<item name="android:textColor">#FFFFFF00</item>
+		<item name="android:layout_marginTop">10dp</item>
+		<item name="android:layout_marginBottom">10dp</item>
+		<item name="android:clickable">true</item>
+		<item name="android:layout_width">wrap_content</item> 
+		<item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="MenuFontSmall">
+        <item name="android:textSize">25sp</item>
+		<item name="android:textColor">#FFFFFF00</item>
+		<item name="android:clickable">true</item>
+		<item name="android:layout_width">wrap_content</item> 
+		<item name="android:layout_height">wrap_content</item>
+    </style>
+    
+       	<!--  Image header Style  -->
+       	<style name="image_header_style">
+		<item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:gravity">left</item>
+        <item name="android:src">@drawable/header_icon</item>item>
+        
+	</style>
+    
+   	<!--  Text Header Big -->
+   
+   	<style name="text_header_label">
+		<item name="android:textSize">18sp</item>
+		<item name="android:textColor">#ffffff</item>
+		<item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:gravity">center</item>
+	</style>	
+	
+   	   	<!--  Text Header Small -->
+   
+   	<style name="text_header_small_label">
+		<item name="android:textSize">15sp</item>
+		<item name="android:textColor">#ffffff</item>
+		<item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:gravity">right</item>
+	</style>
+	
+   	<!--  Split Screen Button  --> 	
+       	<style name="button_weighted">
+		<item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/button_gradient</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+	</style>
+   	
+    <style name="HeaderFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+	    
+</resources>
