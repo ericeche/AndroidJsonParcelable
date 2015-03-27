@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -53,8 +54,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,18 +74,17 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
     private MapAdapter mAdapter;
     private SupportMapFragment mapFragment;
     private List<MyClass> ObjectsList = new ArrayList<MyClass>();
+    
+	// Places List
+	PlacesList nearPlaces =  new PlacesList();
+    List<Place> places;
+    
     /**
      * A Polygon with five points in the Norther Territory, Australia.
      */
-    //TODO XMLPullParser Loaded from JSON Object
     
-    private static final com.google.android.gms.maps.model.LatLng LatLng[]  = {
-    	new LatLng(42.9612, -85.6557), new LatLng(40.750153,-73.985424),
-    	new LatLng(41.889765, -87.629335), new LatLng(36.140502,-86.794089),
-    	new LatLng(47.614281, -122.196595),new LatLng(34.055700, -118.260874),
-    	new LatLng(33.406841, -111.894092)}; 
+    private  com.google.android.gms.maps.model.LatLng LatLng[]  = {}; 
     
-    List<LatLng[]> Coordinates = new ArrayList<LatLng[]>();
     
     /**
      * A list of locations to show in this ListView.
@@ -90,19 +92,7 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
     
     //TODO XMLPullParser Loaded from JSON Object
     
-    private static final NamedLocation[] LIST_LOCATIONS = new NamedLocation[] {
-            new NamedLocation("Grand Rapids Modustri(HQ) Office", new LatLng(42.9612, -85.6557)),
-            new NamedLocation("New York Office", new LatLng(40.750153, -73.985424)),
-            new NamedLocation("Chicago Office", new LatLng(41.889765, -87.629335)),
-            new NamedLocation("Nashville Office", new LatLng(36.140502,-86.794089)),
-            new NamedLocation("Seattle Office", new LatLng(47.614281, -122.196595)),
-            new NamedLocation("Los Angeles Office", new LatLng(34.055700, -118.260874)),
-            new NamedLocation("Phoenix Office", new LatLng(33.406841, -111.894092))
-    };
-    
-    private static final String SERVICE_URL = "http://www.helloworld.com/helloworld_locations.json";
-    private static final String LOG_TAG = "ExampleApp";
-    private Place JsonObjectClass;
+    private  NamedLocation[] LIST_LOCATIONS = new NamedLocation[100];
     Map<String, Place> placelistmap = new HashMap<String, Place>();
     
 
@@ -112,14 +102,22 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.lite_list_demo);
-        
-	
-        
-        for (int i = 0; i < 7; i++){
-        		Coordinates.add(new LatLng[i]);
-        	}
        
-                    
+        Bundle b = getIntent().getExtras();
+        nearPlaces = (PlacesList) b.getSerializable("near_places");
+        
+        places = nearPlaces.results;
+        
+        LIST_LOCATIONS = new NamedLocation[nearPlaces.results.size()];
+        
+        int i = 0;
+        for (Place place : places) {
+          LIST_LOCATIONS[i++] =	 new NamedLocation(place.name, new LatLng(place.location.lat, place.location.lng));                    
+        }
+              
+        GoogleType obj = b.getParcelable("GoogleType");
+
+        
         // Set a custom list adapter for a list of locations
         mAdapter = new MapAdapter(this, LIST_LOCATIONS);
         mList = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.list);
@@ -340,89 +338,15 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
      */
     @Override
     public void onMapReady(GoogleMap map) {
-    	// TODO his should come from the XMLPullParser
-    	for (int i = 0; i < 7; i++){
-    			map.addMarker(new MarkerOptions().position(LatLng[i]).title(LIST_LOCATIONS[i].name));
+    	// TODO his should come from the XMLPullParser, faster render.
+        for (Place place : places) {
+        	map.addMarker(new MarkerOptions().position(new LatLng(place.location.lat, place.location.lng)).title(place.name));
+        }
+          	
     }
-    }
+    
+   
 
     
-	   protected void retrieveAndAddCities() throws IOException {
-	        HttpURLConnection conn = null;
-	        final StringBuilder json = new StringBuilder();
-	        try {
-	            // Connect to the web service
-	            URL url = new URL(SERVICE_URL);
-	            conn = (HttpURLConnection) url.openConnection();
-	            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-	 
-	            // Read the JSON data into the StringBuilder
-	            int read;
-	            char[] buff = new char[1024];
-	            while ((read = in.read(buff)) != -1) {
-	                json.append(buff, 0, read);
-	            }
-	        } catch (IOException e) {
-	            Log.e(LOG_TAG, "Error connecting to service", e);
-	            throw new IOException("Error connecting to service", e);
-	        } finally {
-	            if (conn != null) {
-	                conn.disconnect();
-	            }
-	        }
-	 
-	        // Create markers for the city data.
-	        // Must run this on the UI thread since it's a UI operation.
-	        runOnUiThread(new Runnable() {
-	            public void run() {
-	                try {
-	                    createMarkersFromJson(json.toString());
-	                } catch (JSONException e) {
-	                    Log.e(LOG_TAG, "Error processing JSON", e);
-	                } catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            }
-	        });
-	    }
-	   
-	   
-	    void createMarkersFromJson(String json) throws JSONException, IOException {
-	        // De-serialize the JSON string into an array of city objects
-	        JSONArray jsonArray = new JSONArray(json);
-	        for (int i = 0; i < jsonArray.length(); i++) {
-	        	
-	            // Create a marker for each city in the JSON data.
-	            JSONObject jsonObj = jsonArray.getJSONObject(i);
-	            
-	            // RETRIEVE EACH JSON OBJECT'S FIELDS
-	  
-	            String name = jsonObj.getString("name");
-	            String address = jsonObj.getString("address");
-	            String address2 = jsonObj.getString("address2");
-	            String city = jsonObj.getString("city");
-	            String state = jsonObj.getString("state");
-	            String country = jsonObj.getString("country");
-	            String zip = jsonObj.getString("zip_postal_code");
-	            String phone = jsonObj.getString("phone");
-	            String fax = jsonObj.getString("fax");
-	            String clat = jsonObj.getString("latitude");
-	            String clon = jsonObj.getString("longitude");
-	            String office_image_url = jsonObj.getString("office_image_url");
-	     
-	             
-	            // new instance of Place
-	            JsonObjectClass = new Place(name, address, address2, city,state,zip,phone,fax,clat,clon,office_image_url);
-	            // add to a Place map object
-	            placelistmap.put(Integer.toString(i), JsonObjectClass);
-	            
-	        
-	        }
-	    }    
-    
- 
-		
-	    
 
 }

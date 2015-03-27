@@ -140,9 +140,7 @@ public class BasicMapDemoActivity extends FragmentActivity {
 			public void onClick(View arg0) {
 				Intent i = new Intent(getApplicationContext(),
 						LiteListDemoActivity.class);
-		        
-		 	
-		        
+
 				// Sending user current geo location
 				i.putExtra("user_latitude", Double.toString(gps.getLatitude()));
 				i.putExtra("user_longitude", Double.toString(gps.getLongitude()));
