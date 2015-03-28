@@ -17,6 +17,7 @@
 
 package com.example.mapdemo;
 
+import com.bumptech.glide.Glide;
 import com.example.mapdemo.MainActivity1.LoadPlaces;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,11 +38,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -62,6 +67,9 @@ import java.util.Map.Entry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * This shows to include a map in lite mode in a ListView.
@@ -72,12 +80,26 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
 
     private ListFragment mList;
     private MapAdapter mAdapter;
+    private LazyAdapter lAdapter;
     private SupportMapFragment mapFragment;
-    private List<MyClass> ObjectsList = new ArrayList<MyClass>();
+
     
 	// Places List
 	PlacesList nearPlaces =  new PlacesList();
     List<Place> places;
+    ArrayList<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
+    
+    // Image List Nodes
+	// XML node keys
+    static final String KEY_THUMB_URL = "thumb_url";
+	static final String KEY_SONG = "song"; // parent node
+	static final String KEY_ID = "id";
+	static final String KEY_NAME = "name";
+	static final String KEY_ADDRESS = "address";
+
+	
+	ListView list;
+    
     
     /**
      * A Polygon with five points in the Norther Territory, Australia.
@@ -95,7 +117,8 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
     private  NamedLocation[] LIST_LOCATIONS = new NamedLocation[100];
     Map<String, Place> placelistmap = new HashMap<String, Place>();
     
-
+    // URL Strings manipulation
+    String[] imageUrls;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,17 +132,44 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
         places = nearPlaces.results;
         
         LIST_LOCATIONS = new NamedLocation[nearPlaces.results.size()];
+        imageUrls = new String[nearPlaces.results.size()];
+        
+        // TODO This i++ resembles C. Can be buggy memory leaks
         
         int i = 0;
         for (Place place : places) {
-          LIST_LOCATIONS[i++] =	 new NamedLocation(place.name, new LatLng(place.location.lat, place.location.lng));                    
+        // creating new HashMap
+         HashMap<String, String> placesmap = new HashMap<String, String>();	
+		 placesmap.put(KEY_ID, place.id);
+		 placesmap.put(KEY_ID, place.name);
+		 placesmap.put(KEY_ADDRESS, place.address);
+		 placesmap.put(KEY_THUMB_URL, place.office_image_url);
+		 placesList.add(placesmap);
+		 
+         // Set Locations
+          LIST_LOCATIONS[i] =	 new NamedLocation(place.name, new LatLng(place.location.lat, place.location.lng));
+          
+         // Get image URL's
+         imageUrls[i] = place.office_image_url;
+         i++;
         }
               
+       
+		  list=(ListView)findViewById(R.id.listview);
+		
+		// Getting adapter by passing xml data ArrayList
+        lAdapter=new LazyAdapter(this.getApplicationContext(),R.layout.list_row, places); 
+        
+        list.setAdapter(lAdapter);
+        
+        
+        
         GoogleType obj = b.getParcelable("GoogleType");
 
         
         // Set a custom list adapter for a list of locations
         mAdapter = new MapAdapter(this, LIST_LOCATIONS);
+  
         mList = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.list);
         mList.setListAdapter(mAdapter);
         mapFragment =
@@ -345,8 +395,84 @@ public class LiteListDemoActivity extends FragmentActivity  implements OnMapRead
           	
     }
     
-   
+    public class LazyAdapter extends ArrayAdapter<Place> {
+        
+        private LayoutInflater inflater=null;
+        private List<Place> items;
+        private Context context;
+        
+        public LazyAdapter(Context context, int textViewResourceId, List<Place> d) {
+        	
+        	super(context, textViewResourceId, d);
+            items=d;
+            this.context = context;    
+        }
 
+        public int getCount() {
+            return items.size();
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+       
+        
+     // For a list:
+        @Override
+        public View getView(int position, View recycled, ViewGroup container) {
+            View myImageView = recycled;
+            
+            if (recycled == null) {
+            	inflater = (LayoutInflater)context
+    					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            	myImageView = inflater.inflate(R.layout.list_row, null);
+          
+                // get an Iterator object .
+        		Iterator<Place> itr = items.iterator();
+                
+  
+        		while (itr.hasNext()) {
+        			itr.next();
+        		    Place place = items.get(position);
+        		    
+        		    if ( place != null ){
+                        TextView title = (TextView)myImageView.findViewById(R.id.title); // title
+                        TextView artist = (TextView)myImageView.findViewById(R.id.artist); // artist name
+                        TextView duration = (TextView)myImageView.findViewById(R.id.duration); // duration
+                        ImageView thumb_image=(ImageView)myImageView.findViewById(R.id.list_image); // thumb image
+                        
+                        String url = place.office_image_url;
+
+                        // Setting all values in list row
+                        Glide.with(context.getApplicationContext()).load(url).into(thumb_image);
+/*                        Glide.with(context.getApplicationContext())
+                            .load(url)
+                            .centerCrop()
+                            .crossFade()
+                            .into(thumb_image);
+*/
+                        
+                        title.setText(place.name);
+                        artist.setText(place.address);
+                        duration.setText(place.address2);
+        		    	
+        		    }
+        		    
+        	    }
+            } else {
+                myImageView =  recycled;
+            }
+
+    		
+            return myImageView;
+        }
+        
+        
+    }   
+
+    
+    
+    
     
 
 }

@@ -35,6 +35,8 @@
         android:layout_height="150dp"
         map:liteMode="true"
         map:mapType="none" />
+     <!-- List View to Display Image URL . -->   
+    
 
 </LinearLayout>
 

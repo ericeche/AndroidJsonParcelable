@@ -84,6 +84,7 @@ public class BasicMapDemoActivity extends FragmentActivity {
 	// KEY Strings
 	public static String KEY_REFERENCE = "reference"; // id of the place
 	public static String KEY_NAME = "name"; // name of the place
+	public static String KEY_IMAGE = "name"; // Image of the place
 	public static String KEY_VICINITY = "vicinity"; // Place area name
     
     
@@ -309,7 +310,8 @@ public class BasicMapDemoActivity extends FragmentActivity {
 								// Place reference won't display in listview - it will be hidden
 								// Place reference is used to get "place full details"
 								map.put(KEY_REFERENCE, p.reference);
-								
+								// Place Image
+						
 								// Place name
 								map.put(KEY_NAME, p.name);
 								
