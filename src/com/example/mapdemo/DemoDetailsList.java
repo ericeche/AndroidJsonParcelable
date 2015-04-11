@@ -63,7 +63,7 @@ public final class DemoDetailsList {
                         MarkerDemoActivity.class),
         new DemoDetails(R.string.mapjson_demo_label,
                         R.string.mapjson_demo_description,
-                        MapJson.class),                        
+                        MapJsonMarkers.class),                        
         new DemoDetails(R.string.multi_map_demo_label,
                         R.string.multi_map_demo_description,
                         MultiMapDemoActivity.class),

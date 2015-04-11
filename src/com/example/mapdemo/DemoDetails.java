@@ -43,4 +43,8 @@ public class DemoDetails {
         this.descriptionId = descriptionId;
         this.activityClass = activityClass;
     }
+
+
+
+
 }

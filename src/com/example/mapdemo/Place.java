@@ -63,7 +63,7 @@ public class Place implements Serializable {
 
 	public Place(String name2, String address3, String address22, String city2,
 			String state2, String zip, String phone, String fax2, String clat,
-			String clon, String office_image_url2) {
+			String clon, String office_image_url2,String vicinity) {
 		// TODO Auto-generated constructor stub
 		this.name = name2;
 		this.address = address3;
@@ -75,6 +75,7 @@ public class Place implements Serializable {
 		this.fax = fax2;
 		this.location = new Location(new Double(clat),new Double(clon));
 		this.office_image_url = office_image_url2;
+		this.vicinity = vicinity;
 
 	}
 

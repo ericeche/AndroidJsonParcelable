@@ -82,7 +82,7 @@ public class GoogleSearchType extends Activity {
 
             // Starting new intent
             Intent i = new Intent(getApplicationContext(),
-                    MainActivity1.class);
+                    MainActivity.class);
          // passing user selection to MainActivity
             String selection= multiAutoComplete.getText().toString();
             

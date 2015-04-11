@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    
+ <TextView  
+	android:id="@+id/place_name"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:padding="2dp"
+    android:textColor="#FFFF6347" 
+    android:textSize="25dp" />
+    
+    <TextView  
+	android:id="@+id/place_vicinity"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:padding="2dp"
+    android:textColor="#FFFF6347"     
+    android:textSize="25dp" />
+    
+   <TextView  
+	android:id="@+id/place_image"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:padding="2dp"
+    android:textColor="#FFFF6347" 
+    android:textSize="25dp" />
+    
+    <TextView  
+	android:id="@+id/place_address"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:padding="2dp"
+    android:textColor="#FFFF6347" 
+    android:textSize="25dp" />
+    
+  
+    <TextView  
+	android:id="@+id/place_phone"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:padding="2dp"
+    android:textColor="#FFFF6347"     
+    android:textSize="25dp" />  
+    
+    <TextView  
+	android:id="@+id/place_latitude"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:padding="2dp"
+    android:textColor="#FFFF6347" 
+    android:textSize="25dp" />
+    
+    <TextView  
+	android:id="@+id/place_longitude"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:padding="2dp"
+    android:textColor="#FFFF6347" 
+    android:textSize="25dp" />
+       
+</LinearLayout>
+
